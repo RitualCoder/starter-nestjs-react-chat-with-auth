@@ -78,7 +78,7 @@ const ConnectedUsers: React.FC<ConnectedUsersProps> = ({ socket }) => {
   return (
     <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-sm">
       <div className="flex items-center gap-4">
-        <h2 className="text-lg font-bold">Chat générale</h2>
+        <h2 className="text-lg font-bold">Chat général</h2>
       </div>
 
       <Sheet>
