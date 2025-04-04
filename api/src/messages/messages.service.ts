@@ -28,7 +28,7 @@ export class MessagesService {
 
   findAll(): Promise<Message[]> {
     return this.messagesRepository.find({
-      relations: ['user'],
+      relations: ['user', 'likedBy'],
       order: {
         createdAt: 'ASC',
       },
@@ -38,7 +38,7 @@ export class MessagesService {
   async findOne(id: string): Promise<Message> {
     const message = await this.messagesRepository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: ['user', 'likedBy'],
     });
     if (!message) {
       throw new NotFoundException(`Message with ID ${id} not found`);
@@ -56,5 +56,20 @@ export class MessagesService {
 
   async remove(id: string): Promise<void> {
     await this.messagesRepository.softDelete(id);
+  }
+
+  async likeMessage(messageId: string, userId: string): Promise<Message> {
+    const message = await this.findOne(messageId);
+    if (!message.likedBy) {
+      message.likedBy = [];
+    }
+    const alreadyLiked = message.likedBy.find((user) => user.id === userId);
+    if (!alreadyLiked) {
+      const user = await this.usersService.findOne(userId);
+      message.likedBy.push(user);
+    } else {
+      message.likedBy = message.likedBy.filter((user) => user.id !== userId);
+    }
+    return await this.messagesRepository.save(message);
   }
 }

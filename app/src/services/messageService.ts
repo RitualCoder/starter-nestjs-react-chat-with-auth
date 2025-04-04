@@ -1,5 +1,5 @@
 import axios from "axios";
-import { authService } from "./authService";
+import { authService, User } from "./authService";
 
 const API_URL = "http://localhost:8000/api/messages";
 
@@ -7,6 +7,7 @@ export interface Message {
   id: string;
   text: string;
   createdAt: Date;
+  likedBy: User[];
   user: {
     id: string;
     email: string;
@@ -61,5 +62,19 @@ export const messageService = {
         Authorization: `Bearer ${token}`,
       },
     });
+  },
+
+  async likeMessage(messageId: string): Promise<Message> {
+    const token = authService.getToken();
+    const response = await axios.patch(
+      `${API_URL}/${messageId}/like`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
   },
 };

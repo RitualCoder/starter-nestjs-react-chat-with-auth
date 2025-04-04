@@ -1,5 +1,11 @@
 import { Message } from 'src/messages/entities/message.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -14,4 +20,7 @@ export class User {
 
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
+
+  @ManyToMany(() => Message, (message) => message.likedBy)
+  likedMessages: Message[];
 }
